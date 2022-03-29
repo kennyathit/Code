@@ -1,5 +1,3 @@
-# Code
-Car Speed Code
 
 
 #include<LiquidCrystal.h>
