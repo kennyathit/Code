@@ -1,0 +1,81 @@
+// Prisma schema for the TG Pilot Study platform.
+// Local: provider = "sqlite". To deploy free on Supabase, change provider to
+// "postgresql" and point DATABASE_URL at the Supabase connection string, then
+// run `npx prisma db push`.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Member {
+  id        Int        @id @default(autoincrement())
+  name      String     @unique
+  isAdmin   Boolean    @default(false)
+  scores    Score[]
+  downloads Download[]
+}
+
+model Subject {
+  id     Int     @id @default(autoincrement())
+  name   String  @unique
+  target Float   @default(0.8) // target proportion correct, e.g. 0.8 = 80%
+  scores Score[]
+  books  Book[]
+}
+
+model Score {
+  id        Int      @id @default(autoincrement())
+  member    Member   @relation(fields: [memberId], references: [id])
+  memberId  Int
+  subject   Subject  @relation(fields: [subjectId], references: [id])
+  subjectId Int
+  book      Book?    @relation(fields: [bookId], references: [id])
+  bookId    Int?
+  correct   Int
+  total     Int
+  takenOn   DateTime @default(now())
+  notes     String?
+  createdAt DateTime @default(now())
+
+  @@index([memberId, subjectId])
+}
+
+model Book {
+  id           Int        @id @default(autoincrement())
+  title        String
+  subjects     String     @default("") // display label of the subject(s) it trains
+  subject      Subject?   @relation(fields: [subjectId], references: [id])
+  subjectId    Int? // primary subject (links the assignment to the training engine)
+  description  String? // instructions / note to members
+  maxScore     Int? // total questions, e.g. 20 — prefills the score form
+  timeLimitMin Int? // suggested time to complete, in minutes
+  fileName     String // original filename for download
+  storageKey   String // key/path in the storage backend
+  mime         String     @default("application/pdf")
+  size         Int        @default(0)
+  deadline     DateTime?
+  uploadedAt   DateTime   @default(now())
+  scores       Score[]
+  downloads    Download[]
+}
+
+model Download {
+  id           Int      @id @default(autoincrement())
+  book         Book     @relation(fields: [bookId], references: [id])
+  bookId       Int
+  member       Member   @relation(fields: [memberId], references: [id])
+  memberId     Int
+  downloadedAt DateTime @default(now())
+
+  @@unique([bookId, memberId])
+}
+
+model Setting {
+  key   String @id
+  value String
+}
