@@ -1,0 +1,56 @@
+# ── TG Pilot Study Tracker — configuration ────────────────────────────────────
+# This is the ONE place you edit. Change the lists below, then re-run:
+#     python3 generate_tracker.py
+# to rebuild TG_Pilot_Study_Tracker.xlsx, then re-import it to Google Sheets.
+#
+# (You can also edit the same lists directly in the Sheet's "Config" tab without
+#  regenerating — the dashboards read from there live. Regenerate only if you
+#  want a clean file or you added MANY more members/subjects than the limits.)
+
+# Who is in the study group (you are the admin). Keep <= 20.
+members:
+  - You
+  - Friend A
+  - Friend B
+
+# Test subjects to track. The first four are the ones you confirmed; the rest
+# are common pilot-aptitude sections as examples — delete or rename freely.
+# Keep <= 30. Add as many of "the others" as you like.
+subjects:
+  - Number Series
+  - Figure / Picture Series
+  - Shape Scanning
+  - Aircraft / Spatial Rotation
+  - Mental Arithmetic
+  - Memory / Recall
+  - Instrument Reading
+  - Multitasking
+  - English
+
+# Default target percentage every subject aims for (0.80 = 80%).
+default_target: 0.80
+
+# Group target shown on the scoreboard.
+group_target: 0.75
+
+# Books / study materials you share over LINE. "subjects" is free text,
+# "sent_to" / "date_sent" / "status" you fill in as you go.
+books:
+  - name: Pilot Aptitude Test Workbook
+    subjects: Number Series, Figure / Picture Series
+    where: ""
+    sent_to: ""
+    date_sent: ""
+    status: ""
+  - name: Spatial & Shape Drills
+    subjects: Shape Scanning, Aircraft / Spatial Rotation
+    where: ""
+    sent_to: ""
+    date_sent: ""
+    status: ""
+
+# How many days ahead the Daily Schedule lays out (it drills the weakest first).
+schedule_days: 7
+
+# Days from "today" until the submission deadline for the current round.
+deadline_in_days: 7
