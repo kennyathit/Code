@@ -18,6 +18,14 @@ export default async function DashboardPage() {
 
   return (
     <div className="space-y-8">
+      <p className="rounded-lg bg-brand/5 px-4 py-2 text-sm text-slate-600">
+        👋 New here?{" "}
+        <Link href="/guide" className="font-medium text-brand hover:underline">
+          Read the quick guide
+        </Link>{" "}
+        on how to use this site.
+      </p>
+
       {/* Today's drill */}
       <section className="rounded-xl bg-white p-5 shadow-sm">
         <p className="text-sm uppercase tracking-wide text-slate-400">Today the group drills</p>
