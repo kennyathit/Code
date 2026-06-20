@@ -9,13 +9,17 @@
     "start": "next start",
     "db:push": "prisma db push",
     "seed": "tsx prisma/seed.ts",
-    "setup": "prisma db push && tsx prisma/seed.ts"
+    "setup": "prisma db push && tsx prisma/seed.ts",
+    "gen:prod-schema": "node scripts/gen-schema.mjs",
+    "build:prod": "npm run gen:prod-schema && prisma generate --schema prisma/schema.prod.prisma && next build",
+    "setup:prod": "npm run gen:prod-schema && prisma db push --schema prisma/schema.prod.prisma && prisma generate --schema prisma/schema.prod.prisma && tsx prisma/seed.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
   },
   "dependencies": {
     "@prisma/client": "5.18.0",
+    "@supabase/supabase-js": "2.45.4",
     "next": "14.2.5",
     "react": "18.3.1",
     "react-dom": "18.3.1"

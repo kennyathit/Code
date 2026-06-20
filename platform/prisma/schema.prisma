@@ -1,7 +1,7 @@
 // Prisma schema for the TG Pilot Study platform.
-// Local: provider = "sqlite". To deploy free on Supabase, change provider to
-// "postgresql" and point DATABASE_URL at the Supabase connection string, then
-// run `npx prisma db push`.
+// Local dev uses SQLite (below). For the free Supabase deploy, `npm run build:prod`
+// / `npm run setup:prod` auto-generate a Postgres copy (prisma/schema.prod.prisma)
+// via scripts/gen-schema.mjs — no manual edit needed. See PLATFORM_README.md.
 
 generator client {
   provider = "prisma-client-js"

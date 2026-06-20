@@ -63,26 +63,43 @@ Edit `../config.yaml` (the same file the spreadsheet used), then re-run
 
 ## Share it with the whole group for free (deploy)
 
-Members on different devices need a public URL. Permanently-free option (not the 1-hour
-trials — that's Railway running out of credits):
+Members on different devices need a public URL. Permanently-free stack (not the 1-hour
+trials — that was Railway credits running out): **Vercel** hosts the site, **Supabase**
+holds the database + the PDF files. The code is already wired for both — no code edits
+needed, just config.
 
-**App on Vercel + database & PDF storage on Supabase — both free tiers, permanent.**
+### Step 1 — Supabase (database + PDF storage)
+1. Sign up at <https://supabase.com> and create a **New project** (pick a region near
+   Thailand, e.g. Singapore). Save the database password.
+2. **Storage** (left sidebar) ▸ **New bucket** ▸ name it `materials` ▸ create.
+3. **Project Settings ▸ API**, copy:
+   - **Project URL** → `SUPABASE_URL`
+   - **service_role** secret key → `SUPABASE_SERVICE_ROLE_KEY`
+4. **Project Settings ▸ Database ▸ Connection string ▸ URI** (the pooled one, port
+   6543), copy it and put your password in → `DATABASE_URL`.
 
-1. Push this repo to GitHub (already done on your branch).
-2. **Supabase** (<https://supabase.com>, free): create a project. Copy the Postgres
-   **connection string** (Project Settings ▸ Database) and create a **Storage bucket**
-   for PDFs.
-3. In `prisma/schema.prisma`, change `provider = "sqlite"` to `provider = "postgresql"`.
-4. **Vercel** (<https://vercel.com>, free Hobby): "Import" the GitHub repo, set the root
-   directory to `platform`, and add the env var `DATABASE_URL` = your Supabase string.
-5. Run `npx prisma db push` against the Supabase DB, then `npm run seed`.
-6. Deploy. Share the Vercel URL in LINE — opens on every device.
+### Step 2 — Create the tables + seed (run once from your computer)
+In `C:\TG WEBSITE STUDY\platform`, create a file named `.env` containing the four values
+above (see `.env.example`), then:
+```bat
+npm run setup:prod
+```
+This creates the tables in Supabase and loads members/subjects from `config.yaml`.
 
-> **PDF storage note:** Vercel's filesystem is temporary, so for the deployed version the
-> uploaded PDFs must live in object storage. Everything funnels through **one file**,
-> `lib/storage.ts` — swap its `saveFile`/`readFile` bodies for **Supabase Storage**
-> (free 1 GB) or **Cloudflare R2** (free 10 GB) and nothing else changes. The local build
-> already works as-is. (Tell me when you're ready to deploy and I'll wire this up.)
+### Step 3 — Vercel (hosting)
+1. Sign in at <https://vercel.com> **with GitHub** and **Import** this repository.
+2. Set **Root Directory** to `platform`. (Build command is already configured by
+   `vercel.json` → `npm run build:prod`.)
+3. **Environment Variables** — add all four: `DATABASE_URL`, `SUPABASE_URL`,
+   `SUPABASE_SERVICE_ROLE_KEY`, `SUPABASE_BUCKET` = `materials`.
+4. **Deploy**. When it finishes you get a URL like `https://tg-pilot-study.vercel.app`.
+
+### Step 4 — Share
+Paste the Vercel URL in your LINE group. It opens on Mac, Windows, Android, iPhone —
+members pick their name, submit scores, and download the PDFs you upload.
+
+> Updating later: push to the branch → Vercel redeploys automatically. If you add many new
+> members/subjects in `config.yaml`, run `npm run setup:prod` again to sync them.
 
 ---
 
