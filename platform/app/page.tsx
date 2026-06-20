@@ -81,7 +81,11 @@ export default async function DashboardPage() {
           </table>
         </div>
         <p className="mt-2 text-xs text-slate-400">
-          Each cell is a member&apos;s most recent attempt. Red = weak, green = strong.
+          Each cell is the average of all that member&apos;s attempts. Red = weak, green = strong. See{" "}
+          <Link href="/history" className="text-brand hover:underline">
+            History
+          </Link>{" "}
+          for every mock.
         </p>
       </section>
 
