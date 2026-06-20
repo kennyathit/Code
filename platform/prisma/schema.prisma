@@ -13,19 +13,36 @@ datasource db {
 }
 
 model Member {
-  id        Int        @id @default(autoincrement())
-  name      String     @unique
-  isAdmin   Boolean    @default(false)
+  id        Int           @id @default(autoincrement())
+  name      String        @unique
+  isAdmin   Boolean       @default(false)
   scores    Score[]
   downloads Download[]
+  notes     SubjectNote[]
+}
+
+model SubjectNote {
+  id        Int      @id @default(autoincrement())
+  subject   Subject  @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  subjectId Int
+  member    Member   @relation(fields: [memberId], references: [id])
+  memberId  Int
+  kind      String   @default("tip") // "tip" (strategy note) or "link" (tutorial/resource)
+  body      String // the tip text, or the link's title
+  url       String? // set when kind = "link"
+  createdAt DateTime @default(now())
+
+  @@index([subjectId])
 }
 
 model Subject {
-  id     Int     @id @default(autoincrement())
-  name   String  @unique
-  target Float   @default(0.8) // target proportion correct, e.g. 0.8 = 80%
+  id     Int           @id @default(autoincrement())
+  name   String        @unique
+  target Float         @default(0.8) // target proportion correct, e.g. 0.8 = 80%
+  howTo  String? // admin-written "how to approach this" guide
   scores Score[]
   books  Book[]
+  notes  SubjectNote[]
 }
 
 model Score {
