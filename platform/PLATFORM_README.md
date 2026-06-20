@@ -40,6 +40,10 @@ just opens the same link. No installs for members.
 
 4. Open **http://localhost:3000** in your browser.
 
+> **Even easier:** after step 1–2, just **double-click `start.bat`** (Windows) or run
+> `./start.sh` (Mac) inside the `platform` folder. It installs everything on first run,
+> sets up the database, starts the server, and opens your browser automatically.
+
 > If you downloaded the ZIP instead of cloning, unzip it to `C:\TG WEBSITE STUDY`, then
 > `cd "C:\TG WEBSITE STUDY\platform"` and run the `npm` commands above.
 

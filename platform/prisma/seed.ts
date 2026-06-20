@@ -94,6 +94,13 @@ async function seedDemoScores() {
     [2, 0, d2, 18, 20], [2, 1, d2, 17, 20], [2, 2, d2, 12, 20], [2, 3, d2, 16, 20],
   ];
 
+  // Move the round start before the demo attempts so they count as "submitted".
+  await prisma.setting.upsert({
+    where: { key: "roundStart" },
+    update: { value: startOfDay(d1).toISOString() },
+    create: { key: "roundStart", value: startOfDay(d1).toISOString() },
+  });
+
   await prisma.score.deleteMany();
   for (const [mi, si, d, correct, total] of rows) {
     if (mi >= dbMembers.length || si >= dbSubjects.length) continue;
