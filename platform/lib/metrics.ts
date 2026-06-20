@@ -67,20 +67,25 @@ export async function getDashboard(): Promise<DashboardData> {
     getSettings(),
   ]);
 
-  // current[memberId][subjectId] = proportion of the latest attempt
-  const current = new Map<string, number>();
+  // agg[memberId:subjectId] = running sum + count of every attempt's proportion,
+  // so a member's standing on a subject is the AVERAGE of all their attempts.
+  const agg = new Map<string, { sum: number; count: number }>();
   const lastByMember = new Map<number, Date>();
   for (const s of scores) {
-    const key = `${s.memberId}:${s.subjectId}`;
-    // scores are sorted ascending, so the last write wins = most recent.
-    if (s.total > 0) current.set(key, s.correct / s.total);
+    if (s.total > 0) {
+      const key = `${s.memberId}:${s.subjectId}`;
+      const a = agg.get(key) ?? { sum: 0, count: 0 };
+      a.sum += s.correct / s.total;
+      a.count += 1;
+      agg.set(key, a);
+    }
     const prev = lastByMember.get(s.memberId);
     if (!prev || s.takenOn > prev) lastByMember.set(s.memberId, s.takenOn);
   }
 
   const cur = (m: number, sub: number): number | null => {
-    const v = current.get(`${m}:${sub}`);
-    return v === undefined ? null : v;
+    const a = agg.get(`${m}:${sub}`);
+    return a && a.count > 0 ? a.sum / a.count : null;
   };
 
   // Scoreboard + per-member overall
